@@ -3,9 +3,9 @@ implementation of paper - [You Only Learn One Representation: Unified Network fo
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/you-only-learn-one-representation-unified/real-time-object-detection-on-coco)](https://paperswithcode.com/sota/real-time-object-detection-on-coco?p=you-only-learn-one-representation-unified)
 
-![Unified Network](https://github.com/WongKinYiu/yolor/blob/main/figure/unifued_network.png)
+<!-- ![Unified Network](https://github.com/WongKinYiu/yolor/blob/main/figure/unifued_network.png) -->
 
-<img src="https://github.com/WongKinYiu/yolor/blob/main/figure/performance.png" height="480">
+<!-- <img src="https://github.com/WongKinYiu/yolor/blob/main/figure/performance.png" height="480"> -->
 
 To reproduce the results in the paper, please use [this branch](https://github.com/WongKinYiu/yolor/tree/paper).
 
@@ -171,12 +171,12 @@ python -m torch.distributed.launch --nproc_per_node 8 --master_port 9527 train.p
 [`yolor_p6.pt`](https://drive.google.com/file/d/1Tdn3yqpZ79X7R1Ql0zNlNScB1Dv9Fp76/view?usp=sharing)
 
 ```
-python detect.py --source inference/images/horses.jpg --cfg cfg/yolor_p6.cfg --weights yolor_p6.pt --conf 0.25 --img-size 1280 --device 0
+  python object_detector.py
 ```
 
 You will get the results:
 
-![horses](https://github.com/WongKinYiu/yolor/blob/main/inference/output/horses.jpg)
+![horses](result.jpg)
 
 ## Citation
 
