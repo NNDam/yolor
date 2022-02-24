@@ -62,6 +62,39 @@ You will get the results:
   python object_detector_trt.py
 ```
 Note that yolor_p6 have 4 detect layer, change maximum boxes in **exec_backends/trt_loader.py**
+
+## Convert to TensorRT with BatchedNMSPlugin
+For faster end-to-end processing with GPU, we can intergrade [BatchedNMSPlugin](https://github.com/NVIDIA/TensorRT/tree/main/plugin/batchedNMSPlugin) to Yolor model. First we must convert model to ONNX, then follow all the steps bellow:
+### 1. Simplifier model
+```
+pip install onnx-simplifier
+python3 -m onnxsim yolor_csp_x_star.onnx yolor_csp_x_star-sim.onnx --dynamic-input-shape --input-shape 1,3,640,640
+```
+### 2. Add post-process & plugin
+```
+python3 add_nms_plugins.py --model yolor_csp_x_star-sim.onnx
+```
+If you met IR version checking error, try to use ```torch==1.8.0 onnx==1.6.0``` when convert original to ONNX, and then ```onnx==1.11.0``` for this step 
+This script does following stages:
+- Split current output tensor to bboxes & scores tensors, which are required inputs of ```batchedNMSDynamic``` plugins
+- Add post-processing to current model
+- Add plugin on top of post-processed model 
+### 3. Convert to TensorRT with Plugin
+```
+  /usr/src/tensorrt/bin/trtexec --onnx=yolor_csp_x_star-nms.onnx \
+                                --saveEngine=yolor_csp_x_star.trt \
+                                --explicitBatch \
+                                --minShapes=input:1x3x416x416 \
+                                --optShapes=input:1x3x896x896 \
+                                --maxShapes=input:1x3x896x896 \
+                                --verbose \
+                                --device=0
+```
+### 4. Run demo
+```
+python3 object_detector_trt_nms.py
+```
+
 ## Citation
 
 ```
